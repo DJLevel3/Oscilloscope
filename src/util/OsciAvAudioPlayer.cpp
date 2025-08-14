@@ -30,7 +30,7 @@ using namespace std;
 
 OsciAvAudioPlayer::OsciAvAudioPlayer(){
 	// default audio settings
-	output_expected_buffer_size = 256;
+	output_expected_buffer_size = 1024;
 	output_channel_layout = av_get_default_channel_layout(2);
 	output_sample_rate = 44100;
 	visual_sample_rate = 192000*2;

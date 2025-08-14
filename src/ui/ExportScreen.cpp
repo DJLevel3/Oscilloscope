@@ -50,7 +50,7 @@ ExportScreen::ExportScreen() : mui::Container(){
 	formatSelect = new mui::SegmentedSelect<ExportFormat>();
 	formatSelect->addSegment("h264", ExportFormat::H264);
 	formatSelect->addSegment("png", ExportFormat::IMAGE_SEQUENCE_PNG);
-	formatSelect->addSegment("tiff", ExportFormat::IMAGE_SEQUENCE_TIFF);
+	formatSelect->addSegment("bmp", ExportFormat::IMAGE_SEQUENCE_BMP);
 	formatSelect->setSelected(globals.exportFormat);
 	view->add(formatSelect);
 	
@@ -240,12 +240,12 @@ const ExportFileInfo ExportScreen::getFileInfo(){
 		case ExportFormat::H264:
 			is_dir = false;
 			ext = "mp4";
-			sampleRate = 96000;
+			sampleRate = 192000;
 			break;
-		case ExportFormat::IMAGE_SEQUENCE_TIFF:
+		case ExportFormat::IMAGE_SEQUENCE_BMP:
 			is_dir = true;
-			ext = "tiff";
-			sampleRate = 96000;
+			ext = "bmp";
+			sampleRate = 192000;
 			break;
 		case ExportFormat::IMAGE_SEQUENCE_PNG:
 			is_dir = true;

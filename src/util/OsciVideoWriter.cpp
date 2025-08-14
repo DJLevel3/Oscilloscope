@@ -14,7 +14,6 @@ extern "C"{
 	#include <stdio.h>
 	#include <libavcodec/avcodec.h>
 	#include <libavformat/avformat.h>
-	#include <libavformat/avformat.h>
 	#include <libavutil/avutil.h>
 	#include <libavutil/channel_layout.h>
 	#include <libavutil/samplefmt.h>
@@ -448,7 +447,7 @@ AVStream * add_video_stream( AVFormatContext *oc, AVCodecID codec_id, int width,
 		res = av_opt_set_int(c->priv_data, "max_nal_size", 32*4096, 0);
 		av_opt_set(c->priv_data, "profile", "baseline", AV_OPT_SEARCH_CHILDREN);
 		av_opt_set(c->priv_data, "level", "5.1", AV_OPT_SEARCH_CHILDREN);
-		av_opt_set(c->priv_data, "preset", "slow", AV_OPT_SEARCH_CHILDREN);
+		av_opt_set(c->priv_data, "preset", "fast", AV_OPT_SEARCH_CHILDREN);
 		av_opt_set(c->priv_data, "crf",  "10", AV_OPT_SEARCH_CHILDREN);
 	}
 	

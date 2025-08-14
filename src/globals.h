@@ -19,7 +19,7 @@ extern void setWindowRepresentedFilename( string filename );
 
 string ofxFormatTime(double seconds); 
 
-enum class ExportFormat{H264=1,IMAGE_SEQUENCE_PNG=2,IMAGE_SEQUENCE_TIFF=3};
+enum class ExportFormat{H264=1,IMAGE_SEQUENCE_PNG=2,IMAGE_SEQUENCE_BMP=3};
 class WickedLasers;
 struct ma_context; 
 

@@ -45,11 +45,11 @@ void ofApp::setup(){
 	exportSampleRate = 0;
 	
 	applicationRunning = false; 
-	ofSetVerticalSync(true);
+	ofSetVerticalSync(false);
 	ofBackground(0);
 	ofSetBackgroundAuto(true);
 	
-	ofSetFrameRate(60);
+	ofSetFrameRate(6000);
 	
 	root = new mui::Root();
 	
@@ -125,7 +125,7 @@ void ofApp::startApplication(){
 	playDeviceConfig = ma_device_config_init(ma_device_type_playback);
 	playDeviceConfig.playback.format = ma_format_f32;
 	playDeviceConfig.playback.channels = 2;
-	playDeviceConfig.periodSizeInFrames = 512;
+	playDeviceConfig.periodSizeInFrames = 1024;
 	playDeviceConfig.sampleRate = 0;
 	
 	playDeviceConfig.dataCallback = [](ma_device* device, void* pOutput, const void* pInput, ma_uint32 frameCount) {
@@ -319,7 +319,7 @@ void ofApp::update(){
 		
 		// reset player
 		exporting = 2;
-		globals.player.beginSync(512);
+		globals.player.beginSync(256);
 		globals.player.setPositionMS(0);
 		globals.player.setLoop(false);
 		globals.player.play();
@@ -332,7 +332,7 @@ void ofApp::update(){
 		// our funky player will automatically place
 		exportFrameNum ++;
 		int targetTimeMS = exportFrameNum*1000.0/globals.exportFrameRate;
-		const int bufferSize = 512;
+		const int bufferSize = 1024;
 		static float * output = NULL;
 		if( output == NULL ) output = new float[2*bufferSize];
 		
@@ -355,7 +355,9 @@ void ofApp::update(){
 		if(video_writer.isOpen()){
    			video_writer.close();
 		}
-		
+
+		ofSetVerticalSync(false);
+		ofSetFrameRate(6000);
 	
 		exporting = 0;
 		exportSampleRate = 0;
@@ -372,10 +374,10 @@ void ofApp::update(){
 	mesh.clear();
 	mesh2.clear();
 	
-	int bufferSize = (exporting==0?2048:256);
-	static float * leftBuffer = new float[2048];
-	static float * rightBuffer = new float[2048];
-	static float * zmodBuffer = new float[2048];
+	int bufferSize = (exporting==0?4096:512);
+	static float * leftBuffer = new float[4096];
+	static float * rightBuffer = new float[4096];
+	static float * zmodBuffer = new float[4096];
 
 	MonoSample &left = globals.micActive?micLeft:globals.player.left192;
 	MonoSample &right = globals.micActive?micRight:globals.player.right192;
@@ -414,7 +416,7 @@ void ofApp::update(){
 		
 		while( left.totalLength >= bufferSize && right.totalLength >= bufferSize ){
 			
-			int maxVerts = MIN(1,expectedDt/avgDt)*bufferSize*32*ofMap(totalFramesPlayed,0,60,0,1,true);
+			int maxVerts = MIN(1,expectedDt/avgDt)*bufferSize*64*ofMap(totalFramesPlayed,0,60,0,1,true);
 			totalFramesPlayed ++;
 
 			if( mesh.mesh.getVertices().size() >= maxVerts && !exporting ){
@@ -464,6 +466,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
 	if( !fbo.isAllocated() || fbo.getWidth() != ofGetWidth() || fbo.getHeight() != ofGetHeight() ){
 		int w = ofGetWidth();
 		int h = ofGetHeight();
@@ -552,13 +555,6 @@ void ofApp::draw(){
 			string filename	= ofToDataPath(exportDir + "/" + ofToString(exportFrameNum, 5, '0') + "." + exportExt);
 			ofSaveImage(pixels, filename);
 		}
-		if (ofGetFrameRate() != 6000) {
-			ofSetFrameRate(6000);
-			ofSetVerticalSync(false);
-		}
-	} else if (ofGetFrameRate() != 60) {
-		ofSetFrameRate(60);
-		ofSetVerticalSync(true);
 	}
 	
 	if( showInfo || exporting > 0 ){
@@ -862,13 +858,13 @@ void ofApp::beginExport(const ofFile & file){
 			exportExt = "mp4";
 			exportSampleRate = 192000;
 			break;
-		case ExportFormat::IMAGE_SEQUENCE_TIFF:
-			exportExt = "tiff";
-			exportSampleRate = 96000;
+		case ExportFormat::IMAGE_SEQUENCE_BMP:
+			exportExt = "bmp";
+			exportSampleRate = 192000;
 			break;
 		case ExportFormat::IMAGE_SEQUENCE_PNG:
 			exportExt = "png"; break;
-			exportSampleRate = 96000;
+			exportSampleRate = 192000;
 	}
 
 
@@ -895,6 +891,9 @@ void ofApp::beginExport(const ofFile & file){
 			return;
 		}
 	}
+
+	ofSetVerticalSync(false);
+	ofSetFrameRate(6000);
 	
 	exporting = 1;
 }
@@ -965,7 +964,7 @@ void ofApp::startMic() {
 	micDeviceConfig = ma_device_config_init(info.type);
 	micDeviceConfig.capture.format = ma_format_f32;
 	micDeviceConfig.capture.channels = 0;
-	micDeviceConfig.periodSizeInFrames = 512;
+	micDeviceConfig.periodSizeInFrames = 1024;
 	micDeviceConfig.sampleRate = 222222; // oversample? :D
 	micDeviceConfig.dataCallback = [](ma_device* device, void* pOutput, const void* pInput, ma_uint32 frameCount) {
 		ofApp * app = (ofApp*)device->pUserData;
