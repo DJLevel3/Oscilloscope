@@ -42,6 +42,7 @@ void ofApp::setup(){
 	exporting = 0;
 	tooltipStyle.fontSize = 10;
 	tooltipStyle.color = ofColor(255);
+	exportSampleRate = 0;
 	
 	applicationRunning = false; 
 	ofSetVerticalSync(true);
@@ -924,13 +925,13 @@ void ofApp::updateSampleRate(){
 	if(globals.analogMode == 0) s = 1;
 	else s = 4;
 	
-	int64_t rate = max((int64_t)globals.out_actual.sampleRate/4,(int64_t)std::round(globals.out_actual.sampleRate*globals.timeStretch));
+	int64_t rate = max((int64_t)4800,max((int64_t)globals.out_actual.sampleRate/4,(int64_t)std::round(globals.out_actual.sampleRate*globals.timeStretch)));
 	
 	double vrate =
 		(globals.analogMode!=0?globals.out_actual.sampleRate : globals.player.getFileSampleRate())
 		* s * globals.timeStretch;
 	
-	if(exportSampleRate !=0){
+	if(exportSampleRate > 0){
 		rate = exportSampleRate;
 		vrate =
 			(globals.analogMode!=0?rate : globals.player.getFileSampleRate())
