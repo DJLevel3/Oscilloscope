@@ -551,6 +551,13 @@ void ofApp::draw(){
 			string filename	= ofToDataPath(exportDir + "/" + ofToString(exportFrameNum, 5, '0') + "." + exportExt);
 			ofSaveImage(pixels, filename);
 		}
+		if (ofGetFrameRate() != 6000) {
+			ofSetFrameRate(6000);
+			ofSetVerticalSync(false);
+		}
+	} else if (ofGetFrameRate() != 60) {
+		ofSetFrameRate(60);
+		ofSetVerticalSync(true);
 	}
 	
 	if( showInfo || exporting > 0 ){
